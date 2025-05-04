@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: >-
+  A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
+Resources:
+  microservicehttpendpointpython:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: App.handleRequest
+      Runtime: java8
+      CodeUri: target/workout-logger-0.0.1.jar
+      Description: >-
+        A simple backend (read/write to DynamoDB) with a RESTful API endpoint using Amazon API Gateway.
+      MemorySize: 128
+      Timeout: 10
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName:
+              - "users"
+              - "workouts"
+      Events:
+        SignUp:
+          Type: Api
+          Properties:
+            Path: /signup
+            Method: PUT
+        SignIn:
+          Type: Api
+          Properties:
+            Path: /signin
+            Method: POST
+        Users:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: GET
+        LogWorkOut:
+          Type: Api
+          Properties:
+            Path: /users/{username}
+            Method: PUT
+        GetWorkOut:
+          Type: Api
+          Properties:
+            Path: /users/{username}
+            Method: GET
